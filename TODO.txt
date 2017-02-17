@@ -1,0 +1,3 @@
+Fix Hexagon-clang compiler error where not compiling
+bc compiler not allowing following in ringbuf.h:
+  typedef struct ringbuf_t *ringbuf_t

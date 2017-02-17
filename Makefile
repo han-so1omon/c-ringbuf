@@ -36,16 +36,21 @@ ringbuf-test-gcov.o: ringbuf-test.c ringbuf.h
 ringbuf-gcov.o: ringbuf.c ringbuf.h
 	gcc --coverage -c $< -o $@
 
-ringbuf-test: ringbuf-test.o ringbuf.o
-	$(LD) -o ringbuf-test $(LDFLAGS) $^
+ringbuf-test: ringbuf-test.o libringbuf.so
+	$(LD) -o ringbuf-test $(LDFLAGS) $^ -L$(MY_LIBS_PATH) -lringbuf
 
 ringbuf-test.o: ringbuf-test.c ringbuf.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ 
+
+libringbuf.so: ringbuf.o
+	$(CC) -shared -o libringbuf.so ringbuf.o
+	cp ./libringbuf.so $(MY_LIBS_PATH)/
 
 ringbuf.o: ringbuf.c ringbuf.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+	cp ./ringbuf.h $(MY_INCLUDES_PATH)/
 
 clean:
-	rm -f ringbuf-test ringbuf-test-gcov *.o *.gcov *.gcda *.gcno
+	rm -f ringbuf-test ringbuf-test-gcov *.o *.so *.gcov *.gcda *.gcno
 
 .PHONY:	clean
